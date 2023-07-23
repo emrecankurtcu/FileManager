@@ -1,8 +1,8 @@
 package com.etstur.filemanager;
 
-import com.etstur.filemanager.dto.request.LoginRequestDTO;
-import com.etstur.filemanager.dto.response.FileInformationResponseDTO;
-import com.etstur.filemanager.dto.response.LoginResponseDTO;
+import com.etstur.filemanager.dto.request.LoginRequest;
+import com.etstur.filemanager.dto.response.FileInformationResponse;
+import com.etstur.filemanager.dto.response.LoginResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.*;
@@ -42,21 +42,21 @@ public class FileManagerControllerTests {
     @BeforeEach
     public void setup() throws Exception {
         if(jwt == null){
-            LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder().email("test@test.test").password("1").build();
+            LoginRequest loginRequest = LoginRequest.builder().email("test@test.test").password("1").build();
             String firstName = "Test";
             String lastName = "User";
 
             MvcResult mvcResult = mockMvc.perform(post("/api/v1/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(gson.toJson(loginRequestDTO)))
+                            .content(gson.toJson(loginRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.firstName", is(firstName)))
                     .andExpect(jsonPath("$.lastName", is(lastName)))
                     .andDo(print())
                     .andReturn();
 
-            LoginResponseDTO loginResponseDTO = gson.fromJson(mvcResult.getResponse().getContentAsString(), LoginResponseDTO.class);
-            this.jwt = loginResponseDTO.getJwt();
+            LoginResponse loginResponse = gson.fromJson(mvcResult.getResponse().getContentAsString(), LoginResponse.class);
+            this.jwt = loginResponse.getJwt();
         }
     }
 
@@ -74,15 +74,15 @@ public class FileManagerControllerTests {
     @Test
     @Order(2)
     public void testGetFileInformation() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/v1/get-file-information")
+        MvcResult mvcResult = mockMvc.perform(get("/api/v1/get-files-informations")
                         .header("Authorization","Bearer "+this.jwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andReturn();
 
-        List<FileInformationResponseDTO> fileInformationResponseDTO = gson.fromJson(mvcResult.getResponse().getContentAsString(), new TypeToken<List<FileInformationResponseDTO>>(){}.getType());
-        this.fileInformationId = fileInformationResponseDTO.get(0).getFileInformationId();
+        List<FileInformationResponse> fileInformationResponses = gson.fromJson(mvcResult.getResponse().getContentAsString(), new TypeToken<List<FileInformationResponse>>(){}.getType());
+        this.fileInformationId = fileInformationResponses.get(0).getFileInformationId();
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.etstur.filemanager.service;
 
-import com.etstur.filemanager.dto.request.LoginRequestDTO;
+import com.etstur.filemanager.dto.request.LoginRequest;
 import com.etstur.filemanager.model.User;
 import com.etstur.filemanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +20,16 @@ public class UserService {
 
     /***
      * Find user by email and password
-     * @param loginRequestDTO LoginRequestDTO
+     * @param loginRequest LoginRequest
      * @return User
-     * @throws AuthenticationException
+     * @throws AuthenticationException authenticationException
      */
-    public User login(LoginRequestDTO loginRequestDTO) throws AuthenticationException {
-        User user = userRepository.getUserByEmail(loginRequestDTO.getEmail());
+    public User login(LoginRequest loginRequest) throws AuthenticationException {
+        User user = userRepository.findByEmail(loginRequest.getEmail());
         if(user == null){
             throw new AuthenticationException("Email or password is invalid.");
         }
-        if(!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())){
+        if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
             throw new AuthenticationException("Email or password is invalid.");
         }
         return user;
@@ -41,8 +41,7 @@ public class UserService {
      * @return User
      */
     public User findUserByEmail(String email) {
-        User user =userRepository.getUserByEmail(email);
-
+        User user =userRepository.findByEmail(email);
         if (user == null ) {
             throw new UsernameNotFoundException("Email or password is invalid.");
         }
@@ -52,15 +51,14 @@ public class UserService {
     /***
      * Return authenticated user
      * @return User
-     * @throws AuthenticationException
+     * @throws AuthenticationException authenticationException
      */
     public User getAuthenticatedUser() throws AuthenticationException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             throw new AuthenticationException("User not found.");
         }
-
         org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
-        return userRepository.getUserByEmail(userDetails.getUsername());
+        return userRepository.findByEmail(userDetails.getUsername());
     }
 }

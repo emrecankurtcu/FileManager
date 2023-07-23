@@ -1,18 +1,20 @@
 package com.etstur.filemanager.controller;
 
 
-import com.etstur.filemanager.dto.request.LoginRequestDTO;
-import com.etstur.filemanager.dto.response.LoginResponseDTO;
-import com.etstur.filemanager.dto.response.MessageResponseDTO;
+import com.etstur.filemanager.dto.request.LoginRequest;
+import com.etstur.filemanager.dto.response.LoginResponse;
 import com.etstur.filemanager.model.User;
 import com.etstur.filemanager.other_services.JwtAuthenticationService;
 import com.etstur.filemanager.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,19 +28,22 @@ public class LoginController {
 
     /***
      * Find user by email,password and return user info and jwt
-     * @param loginRequestDTO LoginRequestDTO
+     * @param loginRequest LoginRequest
      * @param request HttpServletRequest
-     * @return ResponseEntity<LoginResponseDTO> || ResponseEntity<MessageResponseDTO>
+     * @return ResponseEntity<LoginResponse>
      */
+    @Operation(summary = "Login with email and password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login successful",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LoginResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "Email or password is invalid",
+                    content = @Content) })
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request) {
-        try {
-            User user = userService.login(loginRequestDTO);
-            String token = jwtAuthenticationService.jwtAuthenticateUser(loginRequestDTO,request);
-            return ResponseEntity.ok(LoginResponseDTO.builder().firstName(user.getFirstName()).lastName(user.getLastName()).jwt(token).build());
-
-        } catch (AuthenticationException exception) {
-            return ResponseEntity.badRequest().body(MessageResponseDTO.builder().message(exception.getMessage()).build());
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) throws AuthenticationException {
+        User user = userService.login(loginRequest);
+        String token = jwtAuthenticationService.jwtAuthenticateUser(loginRequest,request);
+        return ResponseEntity.ok(LoginResponse.builder().firstName(user.getFirstName()).lastName(user.getLastName()).jwt(token).build());
     }
 }

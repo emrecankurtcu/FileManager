@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Load user by username
      * @param username String
      * @return UserDetails
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException usernameNotFoundException
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

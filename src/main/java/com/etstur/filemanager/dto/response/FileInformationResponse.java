@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @ToString
 @Entity
-public class FileInformationResponseDTO {
+public class FileInformationResponse {
     @Id
     private int fileInformationId;
     private String path;

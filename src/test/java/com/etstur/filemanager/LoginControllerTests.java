@@ -1,6 +1,6 @@
 package com.etstur.filemanager;
 
-import com.etstur.filemanager.dto.request.LoginRequestDTO;
+import com.etstur.filemanager.dto.request.LoginRequest;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,24 +26,24 @@ class LoginControllerTests {
 
     @Test
     public void testLoginInvalidCredentials() throws Exception {
-        LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder().email("test@test.test").password("12").build();
+        LoginRequest loginRequest = LoginRequest.builder().email("test@test.test").password("12").build();
 
         mockMvc.perform(post("/api/v1/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(loginRequestDTO)))
+                        .content(gson.toJson(loginRequest)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 
     @Test
     public void testLoginValidCredentials() throws Exception {
-        LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder().email("test@test.test").password("1").build();
+        LoginRequest loginRequest = LoginRequest.builder().email("test@test.test").password("1").build();
         String firstName = "Test";
         String lastName = "User";
 
         mockMvc.perform(post("/api/v1/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(loginRequestDTO)))
+                        .content(gson.toJson(loginRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is(firstName)))
                 .andExpect(jsonPath("$.lastName", is(lastName)))

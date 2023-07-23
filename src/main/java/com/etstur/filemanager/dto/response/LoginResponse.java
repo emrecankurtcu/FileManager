@@ -9,6 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class MessageResponseDTO {
-    private String message;
+public class LoginResponse {
+    private String firstName;
+    private String lastName;
+    private String jwt;
 }

@@ -1,6 +1,6 @@
 package com.etstur.filemanager.service;
 
-import com.etstur.filemanager.dto.response.FileInformationResponseDTO;
+import com.etstur.filemanager.dto.response.FileInformationResponse;
 import com.etstur.filemanager.model.FileInformation;
 import com.etstur.filemanager.model.User;
 import com.etstur.filemanager.other_services.FileService;
@@ -29,16 +29,15 @@ import java.util.List;
 public class FileInformationService {
     private final FileInformationRepository fileInformationRepository;
     private final FileService fileService;
-
     private final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     /***
      * Upload file to uploads/files, allowed types png,jpg,jpeg,docx,pdf,xlsx, max file size 5MB
      * @param user User
      * @param file MultipartFile
-     * @throws IOException
-     * @throws NotSupportedException
-     * @throws SizeLimitExceededException
+     * @throws IOException ioException
+     * @throws NotSupportedException notSupportedException
+     * @throws SizeLimitExceededException sizeLimitExceededException
      */
     @Transactional
     public void uploadFile(User user, MultipartFile file) throws IOException, NotSupportedException, SizeLimitExceededException {
@@ -64,10 +63,10 @@ public class FileInformationService {
     /***
      * Return file informations
      * @param user User
-     * @return List<FileInformationResponseDTO>
+     * @return List<FileInformationResponse>
      */
-    public List<FileInformationResponseDTO> getFileInformation(User user){
-        return fileInformationRepository.getFileInformation(user.getUserId());
+    public List<FileInformationResponse> getFilesInformations(User user){
+        return fileInformationRepository.getFilesInformations(user.getUserId());
     }
 
     /***
@@ -75,11 +74,11 @@ public class FileInformationService {
      * @param user User
      * @param fileInformationId int
      * @return ResponseEntity<ByteArrayResource>
-     * @throws IOException
+     * @throws IOException ioException
      */
     public ResponseEntity<ByteArrayResource> getFileById(User user, int fileInformationId) throws IOException {
-        FileInformation fileInformation = fileInformationRepository.findById(fileInformationId).orElseThrow();
-        if(fileInformation.getUserId() != user.getUserId()){
+        FileInformation fileInformation = fileInformationRepository.findByFileInformationIdAndUserId(fileInformationId,user.getUserId());
+        if(fileInformation == null){
             throw new FileNotFoundException("File not found.");
         }
         if(fileService.fileExists(fileInformation.getPath())){
@@ -88,8 +87,7 @@ public class FileInformationService {
             String contentType;
             ByteArrayResource resource = new ByteArrayResource(fileArr);
             if (fileInformation.getName().toLowerCase().endsWith(".jpg")
-                    || fileInformation.getName().toLowerCase().endsWith(".jpeg")
-                    ||  fileInformation.getName().toLowerCase().endsWith(".png")) {
+                    || fileInformation.getName().toLowerCase().endsWith(".jpeg")) {
                 contentType = MediaType.IMAGE_JPEG_VALUE;
             } else if (fileInformation.getName().toLowerCase().endsWith(".png")) {
                 contentType = MediaType.IMAGE_PNG_VALUE;
@@ -115,15 +113,14 @@ public class FileInformationService {
      * Delete file by fileInformationId
      * @param user User
      * @param fileInformationId int
-     * @throws IOException
+     * @throws IOException ioException
      */
     @Transactional
     public void deleteFile(User user, int fileInformationId) throws IOException {
-        FileInformation fileInformation = fileInformationRepository.findById(fileInformationId).orElseThrow();
-        if(fileInformation.getUserId() != user.getUserId()){
+        FileInformation fileInformation = fileInformationRepository.findByFileInformationIdAndUserId(fileInformationId,user.getUserId());
+        if(fileInformation == null){
             throw new FileNotFoundException("File not found.");
         }
-
         fileService.removeFile(fileInformation.getPath());
         fileInformationRepository.delete(fileInformation);
     }

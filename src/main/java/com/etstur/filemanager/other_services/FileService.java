@@ -11,18 +11,16 @@ import java.nio.file.Paths;
 
 @Service("fileService")
 public class FileService {
-
-    private final String folder1 = "uploads";
-    private final String folder2 = "files";
-
     /***
      * Upload file folder1/folder2/userToken/
      * @param userToken String
      * @param file MultipartFile
      * @return File
-     * @throws IOException
+     * @throws IOException ioException
      */
     public File uploadFile(String userToken, MultipartFile file) throws IOException {
+        String folder1 = "uploads";
+        String folder2 = "files";
         if (!directoryExists(folder1)) {
             createDirectory(folder1);
         }
@@ -64,7 +62,7 @@ public class FileService {
     /***
      * Remove file if exists
      * @param path String
-     * @throws IOException
+     * @throws IOException ioException
      */
     public void removeFile(String path) throws IOException {
         Path path2 = Paths.get(path);

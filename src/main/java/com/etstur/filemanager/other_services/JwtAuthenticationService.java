@@ -1,7 +1,7 @@
 package com.etstur.filemanager.other_services;
 
 
-import com.etstur.filemanager.dto.request.LoginRequestDTO;
+import com.etstur.filemanager.dto.request.LoginRequest;
 import com.etstur.filemanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,8 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-
-import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -27,7 +25,6 @@ public class JwtAuthenticationService {
      * @param request HttpServletRequest
      */
     public void jwtValidate(String email, String jwt, HttpServletRequest request) {
-
         if (jwt.startsWith(JwtUtil.TOKEN_PREFIX)) {
             jwt = jwt.replaceAll(JwtUtil.TOKEN_PREFIX, "");
         }
@@ -42,20 +39,17 @@ public class JwtAuthenticationService {
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
-
         }
-
     }
 
     /***
      * Create authentication and return jwt
-     * @param loginRequestDTO LoginRequestDTO
+     * @param loginRequest LoginRequest
      * @param request HttpServletRequest
      * @return jwt String
-     * @throws AuthenticationException
      */
-    public String jwtAuthenticateUser(LoginRequestDTO loginRequestDTO, HttpServletRequest request) throws AuthenticationException {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginRequestDTO.getEmail());
+    public String jwtAuthenticateUser(LoginRequest loginRequest, HttpServletRequest request) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
