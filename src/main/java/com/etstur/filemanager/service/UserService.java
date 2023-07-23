@@ -20,7 +20,7 @@ public class UserService {
 
     /***
      * Find user by email and password
-     * @param loginRequestDTO email and password
+     * @param loginRequestDTO LoginRequestDTO
      * @return User
      * @throws AuthenticationException
      */
@@ -37,7 +37,7 @@ public class UserService {
 
     /***
      * Find user by email
-     * @param email User email
+     * @param email String
      * @return User
      */
     public User findUserByEmail(String email) {
@@ -47,5 +47,20 @@ public class UserService {
             throw new UsernameNotFoundException("Email or password is invalid.");
         }
         return user;
+    }
+
+    /***
+     * Return authenticated user
+     * @return User
+     * @throws AuthenticationException
+     */
+    public User getAuthenticatedUser() throws AuthenticationException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            throw new AuthenticationException("User not found.");
+        }
+
+        org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+        return userRepository.getUserByEmail(userDetails.getUsername());
     }
 }

@@ -30,9 +30,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	/***
 	 * Handle all http requests and check Authorization header
-	 * @param request
-	 * @param response
-	 * @param filterChain
+	 * @param request HttpServletRequest
+	 * @param response HttpServletResponse
+	 * @param filterChain FilterChain
 	 * @throws ServletException
 	 * @throws IOException
 	 */
@@ -86,6 +86,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		}
 		filterChain.doFilter(request, response);
 	}
-
-
 }

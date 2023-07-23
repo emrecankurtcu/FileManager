@@ -26,7 +26,6 @@ class LoginControllerTests {
 
     @Test
     public void testLoginInvalidCredentials() throws Exception {
-
         LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder().email("test@test.test").password("12").build();
 
         mockMvc.perform(post("/api/v1/login")
@@ -38,7 +37,6 @@ class LoginControllerTests {
 
     @Test
     public void testLoginValidCredentials() throws Exception {
-
         LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder().email("test@test.test").password("1").build();
         String firstName = "Test";
         String lastName = "User";

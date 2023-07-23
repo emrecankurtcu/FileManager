@@ -26,9 +26,9 @@ public class LoginController {
 
     /***
      * Find user by email,password and return user info and jwt
-     * @param loginRequestDTO
-     * @param request
-     * @return ResponseEntity<LoginResponseDTO>
+     * @param loginRequestDTO LoginRequestDTO
+     * @param request HttpServletRequest
+     * @return ResponseEntity<LoginResponseDTO> || ResponseEntity<MessageResponseDTO>
      */
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request) {

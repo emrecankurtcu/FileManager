@@ -21,10 +21,10 @@ public class JwtAuthenticationService {
     private final CustomUserDetailsService customUserDetailsService;
 
     /***
-     * Jwt validate and set authentication
-     * @param email
-     * @param jwt
-     * @param request
+     * Validate jwt and set authentication
+     * @param email String
+     * @param jwt String
+     * @param request HttpServletRequest
      */
     public void jwtValidate(String email, String jwt, HttpServletRequest request) {
 
@@ -48,10 +48,10 @@ public class JwtAuthenticationService {
     }
 
     /***
-     * Create auth and return jwt
-     * @param loginRequestDTO
-     * @param request
-     * @return jwt
+     * Create authentication and return jwt
+     * @param loginRequestDTO LoginRequestDTO
+     * @param request HttpServletRequest
+     * @return jwt String
      * @throws AuthenticationException
      */
     public String jwtAuthenticateUser(LoginRequestDTO loginRequestDTO, HttpServletRequest request) throws AuthenticationException {
