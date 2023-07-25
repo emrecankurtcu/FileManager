@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -38,6 +39,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+		/***
+		 * Added for CORS error
+		 */
+		if (CorsUtils.isPreFlightRequest(request)) {
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+			response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE");
+			response.setHeader("Access-Control-Max-Age", "3600");
+			response.setHeader("Access-Control-Allow-Credentials", "true");
+			response.setHeader("Access-Control-Allow-Headers", "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization");
+			return;
+		}
 		String uri=request.getRequestURI();
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("utf-8");

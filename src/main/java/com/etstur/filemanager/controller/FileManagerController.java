@@ -44,7 +44,7 @@ public class FileManagerController {
                             schema = @Schema(implementation = MessageResponse.class)) }) })
     @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<MessageResponse> uploadPhoto(@RequestParam("file") MultipartFile file) throws SizeLimitExceededException, IOException, NotSupportedException, AuthenticationException {
+    public ResponseEntity<MessageResponse> uploadFile(@RequestParam("file") MultipartFile file) throws SizeLimitExceededException, IOException, NotSupportedException, AuthenticationException {
         User user = userService.getAuthenticatedUser();
         fileInformationService.uploadFile(user,file);
         return ResponseEntity.ok(MessageResponse.builder().message("File uploaded.").build());
