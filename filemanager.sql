@@ -14,8 +14,8 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-CREATE DATABASE IF NOT EXISTS `fileManagerDatabase`;
-USE `fileManagerDatabase`;
+CREATE DATABASE IF NOT EXISTS `FileManagerDatabase`;
+USE `FileManagerDatabase`;
 
 CREATE TABLE IF NOT EXISTS `fileInformation` (
   `fileInformationId` int NOT NULL AUTO_INCREMENT,
